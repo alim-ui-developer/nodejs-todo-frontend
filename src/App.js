@@ -38,8 +38,35 @@ function App() {
       console.log("error", err)
 
     }
-
   }
+
+  // 상태 변경
+  const toggleComplete = async (id) => {
+    try {
+      const task = todoList.find((item) => item._id === id);
+      const response = await api.put(`/tasks/${id}`, {
+        isComplete: !task.isComplete,
+      });
+      if (response.status === 200) {
+        getTasks();
+      }
+    } catch (error) {
+      console.log("error", error);
+    }
+  };
+
+  // 삭제
+  const deleteItem = async (id) => {
+    try {
+      console.log(id);
+      const response = await api.delete(`/tasks/${id}`);
+      if (response.status === 200) {
+        getTasks();
+      }
+    } catch (error) {
+      console.log("error", error);
+    }
+  };
 
   useEffect(() => {
     getTasks();
@@ -60,8 +87,7 @@ function App() {
           <button className="button-add" onClick={addTask}>추가</button>
         </Col>
       </Row>
-
-      <TodoBoard todoList={todoList} />
+      <TodoBoard todoList={todoList} deleteItem={deleteItem} toggleComplete={toggleComplete} />
     </Container>
   );
 }
